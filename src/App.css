@@ -1,5 +1,26 @@
 .App {
   text-align: center;
+  display: flex;
+}
+
+.UserContainer {
+  margin: 1%;
+  padding: 1%;
+  background-color: #dfdfdf;
+  flex: 1;
+}
+
+.Avatar {
+  border-radius: 50%;
+}
+
+.LastName {
+  font-weight: bold;
+  font-size: large;
+}
+
+.Email {
+  font-size: small;
 }
 
 .App-logo {
