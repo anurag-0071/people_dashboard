@@ -1,13 +1,13 @@
+
 .App {
   text-align: center;
-  display: flex;
 }
 
 .UserContainer {
   margin: 1%;
   padding: 1%;
   background-color: #dfdfdf;
-  flex: 1;
+  float: left;
 }
 
 .Avatar {
