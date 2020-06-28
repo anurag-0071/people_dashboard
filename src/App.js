@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 import UserCard from "./Components/UserCard";
 
 const REQUEST_URL = "https://reqres.in/api/users";  // GET https://reqres.in/api/users?page=1
-const UPDATE_USERS_URL = "https://reqres.in/api/users";  // PUT https://reqres.in/api/users/{userID},
 
 function App() {
 
@@ -15,8 +13,8 @@ function App() {
     hasMore: true,
     users: [],
   }
+
   const [state, setState] = useState(initialState)
-  // const [currentUs]
 
   const fetchUsers = () => {
     fetch(REQUEST_URL + "?page=" + state.page).then(res => res.json())
@@ -24,7 +22,10 @@ function App() {
         const users = response.data;
         setState(Object.assign({}, state, {
           isLoading: false,
-          users,
+          users: [
+            ...state.users,
+            ...users
+          ],
           hasMore: !(response.page === response.total_pages)
         }));
       }, error => {
@@ -39,23 +40,34 @@ function App() {
     }).then(res => res.json())
       .then(result => {
         alert(JSON.stringify(result));
-        loadUsers();
       })
   }
 
   const loadUsers = () => {
+    console.log("fetching users")
     setState(Object.assign({}, state, {
       isLoading: true,
-      page: state.page + 1
     }));
     if (state.hasMore) {
       fetchUsers();
     }
   }
 
+  window.onscroll = (scroll) => {
+    if (state.hasMore && window.innerHeight + document.documentElement.scrollTop === document.documentElement.offsetHeight) {
+      console.log("changing page no", Object.assign({}, state, {
+        page: state.page + 1
+      }))
+      setState({
+        ...state,
+        page: state.page + 1
+      })
+    }
+  }
+
   useEffect(() => {
     loadUsers();
-  }, [])
+  }, [state.page])
 
   const getUsers = () => {
     return state.users.map(user => (
@@ -64,7 +76,7 @@ function App() {
   }
 
   return (
-    <div className="App">
+    <div className="App" >
       {getUsers()}
     </div>
   );
