@@ -4,7 +4,7 @@ import './App.css';
 
 import UserCard from "./Components/UserCard";
 
-const FETCH_USERS_URL = "https://reqres.in/api/users";  // GET https://reqres.in/api/users?page=1
+const REQUEST_URL = "https://reqres.in/api/users";  // GET https://reqres.in/api/users?page=1
 const UPDATE_USERS_URL = "https://reqres.in/api/users";  // PUT https://reqres.in/api/users/{userID},
 
 function App() {
@@ -19,15 +19,27 @@ function App() {
   // const [currentUs]
 
   const fetchUsers = () => {
-    fetch(FETCH_USERS_URL + "?page=" + state.page).then(res => res.json())
+    fetch(REQUEST_URL + "?page=" + state.page).then(res => res.json())
       .then(response => {
-        console.log("fetch Users response ", response);
         const users = response.data;
         setState(Object.assign({}, state, {
           isLoading: false,
           users,
           hasMore: !(response.page === response.total_pages)
         }));
+      }, error => {
+        console.error("Error in fetching users", error);
+      });
+  }
+
+  const updateUser = (user) => {
+    fetch(REQUEST_URL + "/" + user.id, {
+      method: "PUT",
+      body: user
+    }).then(res => res.json())
+      .then(result => {
+        alert(JSON.stringify(result));
+        loadUsers();
       })
   }
 
@@ -47,7 +59,7 @@ function App() {
 
   const getUsers = () => {
     return state.users.map(user => (
-      <UserCard key={user.id} user={user} />
+      <UserCard key={user.id} user={user} updateUser={updateUser} />
     ))
   }
 
